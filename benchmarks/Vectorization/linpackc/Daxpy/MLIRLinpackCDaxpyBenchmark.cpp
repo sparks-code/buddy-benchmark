@@ -21,7 +21,10 @@
 #include <benchmark/benchmark.h>
 #include <buddy/Core/Container.h>
 #include <iostream>
-
+#include <algorithm>
+#include <stdio.h>
+#include <math.h>
+#include "Daxpy.h"     
 // Declare the linpackcdaxpy C interface.
 extern "C" {
 void _mlir_ciface_mlir_linpackcdaxpyrollf32(int n, float da,
@@ -35,11 +38,10 @@ void _mlir_ciface_mlir_linpackcdaxpyunrollf32(int n, float da,
                                               MemRef<float, 1> *dy, int incy);
 void _mlir_ciface_mlir_linpackcdaxpyunrollf64(int n, double da,
                                               MemRef<double, 1> *dx, int incx,
-                                              MemRef<double, 1> *dy, int incy);
+                                              MemRef<double, 1> *dy, int incy);                     
 }
-
 // Define input and output sizes.
-constexpr int n = 10;
+constexpr int n = 10000;
 constexpr int input_incx = -1;
 constexpr int input_incy = 2;
 constexpr int size_x = input_incx < 0 ? -input_incx : input_incx;
@@ -97,11 +99,46 @@ static void MLIR_DaxpyUnrollF64(benchmark::State &state) {
   }
 }
 
+static void Daxpy_ROLL_F32(benchmark::State &state) {
+  for (auto _ : state) {
+    for (int i = 0; i < state.range(0); ++i) {
+      daxpy_ROLL(n,input_da_f32,inputMLIRDaxpy_dxf32.getData(),input_incx,outputMLIRDaxpy_f32.getData(),input_incy);
+    }
+  }
+}
+
+static void Daxpy_ROLL_F64(benchmark::State &state) {
+  for (auto _ : state) {
+    for (int i = 0; i < state.range(0); ++i) {
+      daxpy_ROLL(n,input_da_f64,inputMLIRDaxpy_dxf64.getData(),input_incx,outputMLIRDaxpy_f64.getData(),input_incy);
+    }
+  }
+}
+
+static void Daxpy_UNROLL_F32(benchmark::State &state) {
+  for (auto _ : state) {
+    for (int i = 0; i < state.range(0); ++i) {
+      daxpy_UNROLL(n,input_da_f32,inputMLIRDaxpy_dxf32.getData(),input_incx,outputMLIRDaxpy_f32.getData(),input_incy);
+    }
+  }
+}
+
+static void Daxpy_UNROLL_F64(benchmark::State &state) {
+  for (auto _ : state) {
+    for (int i = 0; i < state.range(0); ++i) {
+      daxpy_UNROLL(n,input_da_f64,inputMLIRDaxpy_dxf64.getData(),input_incx,outputMLIRDaxpy_f64.getData(),input_incy);
+    }
+  }
+}
 // Register benchmarking function.
 BENCHMARK(MLIR_DaxpyRollF32)->Arg(1);
 BENCHMARK(MLIR_DaxpyRollF64)->Arg(1);
 BENCHMARK(MLIR_DaxpyUnrollF32)->Arg(1);
 BENCHMARK(MLIR_DaxpyUnrollF64)->Arg(1);
+BENCHMARK(Daxpy_ROLL_F32)->Arg(1);
+BENCHMARK(Daxpy_ROLL_F64)->Arg(1);
+BENCHMARK(Daxpy_UNROLL_F32)->Arg(1);
+BENCHMARK(Daxpy_UNROLL_F64)->Arg(1);
 
 // Generate result image.
 void generateResultMLIRLinpackCDaxpy() {
