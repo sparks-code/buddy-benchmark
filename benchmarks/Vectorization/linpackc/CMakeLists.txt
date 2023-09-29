@@ -1,92 +1,77 @@
 #-------------------------------------------------------------------------------
 # MLIR SCF Dialect linpackc Operation + Upstream Lowering Passes
 #-------------------------------------------------------------------------------
+add_subdirectory(Daxpy)
+add_subdirectory(Ddot)
+add_subdirectory(Dgefa)
+# add_subdirectory(Dgesl)
+add_subdirectory(Dmxpy)
+add_subdirectory(Dscal)
+add_subdirectory(Epslon)
+add_subdirectory(Idamax)
+add_subdirectory(Matgen)
 
-add_custom_command(OUTPUT mlir-linpackcdaxpyrollf32.o
-  COMMAND ${LLVM_MLIR_BINARY_DIR}/mlir-opt
-          ${BUDDY_SOURCE_DIR}/benchmarks/Vectorization/linpackc/MLIRLinpackCDaxpyRollF32.mlir 
-            -convert-scf-to-cf
-            -expand-strided-metadata
-            -convert-arith-to-llvm
-            -llvm-request-c-wrappers
-            -finalize-memref-to-llvm
-            -convert-func-to-llvm 
-            -reconcile-unrealized-casts | 
-          ${LLVM_MLIR_BINARY_DIR}/mlir-translate --mlir-to-llvmir |
-          ${LLVM_MLIR_BINARY_DIR}/llc -mtriple=${BUDDY_OPT_TRIPLE} 
-            -mattr=${BUDDY_OPT_ATTR} --filetype=obj 
-            -o ${BUDDY_BINARY_DIR}/../benchmarks/Vectorization/linpackc/mlir-linpackcdaxpyrollf32.o
-)
-add_library(MLIRLinpackDaxpyRollF32 STATIC mlir-linpackcdaxpyrollf32.o)
-set_target_properties(MLIRLinpackDaxpyRollF32 PROPERTIES LINKER_LANGUAGE CXX)
+add_dependencies(MLIRLinpackDgefaRollF32 
+                MLIRLinpackDscalRollF32
+                MLIRLinpackDscalUnrollF32
 
-add_custom_command(OUTPUT mlir-linpackcdaxpyrollf64.o
-  COMMAND ${LLVM_MLIR_BINARY_DIR}/mlir-opt
-          ${BUDDY_SOURCE_DIR}/benchmarks/Vectorization/linpackc/MLIRLinpackCDaxpyRollF64.mlir 
-            -convert-scf-to-cf
-            -expand-strided-metadata
-            -convert-arith-to-llvm
-            -llvm-request-c-wrappers
-            -finalize-memref-to-llvm
-            -convert-func-to-llvm 
-            -reconcile-unrealized-casts |
-          ${LLVM_MLIR_BINARY_DIR}/mlir-translate --mlir-to-llvmir |
-          ${LLVM_MLIR_BINARY_DIR}/llc -mtriple=${BUDDY_OPT_TRIPLE} 
-            -mattr=${BUDDY_OPT_ATTR} --filetype=obj 
-            -o ${BUDDY_BINARY_DIR}/../benchmarks/Vectorization/linpackc/mlir-linpackcdaxpyrollf64.o
-)
-add_library(MLIRLinpackDaxpyRollF64 STATIC mlir-linpackcdaxpyrollf64.o)
-set_target_properties(MLIRLinpackDaxpyRollF64 PROPERTIES LINKER_LANGUAGE CXX)
+                MLIRLinpackIdamaxF32
 
-add_custom_command(OUTPUT mlir-linpackcdaxpyunrollf64.o
-  COMMAND ${LLVM_MLIR_BINARY_DIR}/mlir-opt
-          ${BUDDY_SOURCE_DIR}/benchmarks/Vectorization/linpackc/MLIRLinpackCDaxpyUnrollF64.mlir 
-            -convert-scf-to-cf
-            -expand-strided-metadata
-            -convert-arith-to-llvm
-            -llvm-request-c-wrappers
-            -finalize-memref-to-llvm
-            -convert-func-to-llvm 
-            -reconcile-unrealized-casts |
-          ${LLVM_MLIR_BINARY_DIR}/mlir-translate --mlir-to-llvmir |
-          ${LLVM_MLIR_BINARY_DIR}/llc -mtriple=${BUDDY_OPT_TRIPLE} 
-            -mattr=${BUDDY_OPT_ATTR} --filetype=obj 
-            -o ${BUDDY_BINARY_DIR}/../benchmarks/Vectorization/linpackc/mlir-linpackcdaxpyunrollf64.o
-)
-add_library(MLIRLinpackDaxpyUnrollF64 STATIC mlir-linpackcdaxpyunrollf64.o)
-set_target_properties(MLIRLinpackDaxpyUnrollF64 PROPERTIES LINKER_LANGUAGE CXX)
-
-add_custom_command(OUTPUT mlir-linpackcdaxpyunrollf32.o
-  COMMAND ${LLVM_MLIR_BINARY_DIR}/mlir-opt
-          ${BUDDY_SOURCE_DIR}/benchmarks/Vectorization/linpackc/MLIRLinpackCDaxpyUnrollF32.mlir 
-            -convert-scf-to-cf
-            -expand-strided-metadata
-            -convert-arith-to-llvm
-            -llvm-request-c-wrappers
-            -finalize-memref-to-llvm
-            -convert-func-to-llvm 
-            -reconcile-unrealized-casts |
-          ${LLVM_MLIR_BINARY_DIR}/mlir-translate --mlir-to-llvmir |
-          ${LLVM_MLIR_BINARY_DIR}/llc -mtriple=${BUDDY_OPT_TRIPLE} 
-            -mattr=${BUDDY_OPT_ATTR} --filetype=obj 
-            -o ${BUDDY_BINARY_DIR}/../benchmarks/Vectorization/linpackc/mlir-linpackcdaxpyunrollf32.o
-)
-add_library(MLIRLinpackDaxpyUnrollF32 STATIC mlir-linpackcdaxpyunrollf32.o)
-set_target_properties(MLIRLinpackDaxpyUnrollF32 PROPERTIES LINKER_LANGUAGE CXX)
-
+                MLIRLinpackDaxpyRollF32
+                MLIRLinpackDaxpyUnrollF32
+                )
 #-------------------------------------------------------------------------------
 # Vectorization Benchmark Targets
 #-------------------------------------------------------------------------------
 
 add_executable(vectorization-linpackc-benchmark
   Main.cpp
-  MLIRLinpackCDaxpyBenchmark.cpp
+  ./Daxpy/MLIRLinpackCDaxpyBenchmark.cpp
+  ./Matgen/MLIRLinpackCMatgenBenchmark.cpp
+  ./Ddot/MLIRLinpackCDdotBenchmark.cpp
+  ./Dscal/MLIRLinpackCDscalBenchmark.cpp
+  ./Idamax/MLIRLinpackCIdamaxBenchmark.cpp
+  ./Dmxpy/MLIRLinpackCDmxpyBenchmark.cpp
+  ./Epslon/MLIRLinpackCEpslonBenchmark.cpp
   )
 
 target_link_libraries(vectorization-linpackc-benchmark
   GoogleBenchmark
+  
   MLIRLinpackDaxpyRollF32
   MLIRLinpackDaxpyRollF64
   MLIRLinpackDaxpyUnrollF32
   MLIRLinpackDaxpyUnrollF64
+  Daxpy
+
+  MLIRLinpackMatgenF32
+  MLIRLinpackMatgenF64
+  Matgen
+
+  MLIRLinpackDdotRollF32
+  MLIRLinpackDdotRollF64
+  MLIRLinpackDdotUnrollF32
+  MLIRLinpackDdotUnrollF64
+  Ddot
+
+  MLIRLinpackDscalRollF32
+  MLIRLinpackDscalUnrollF32
+  MLIRLinpackDscalRollF64
+  MLIRLinpackDscalUnrollF64
+  Dscal
+
+  MLIRLinpackIdamaxF32
+  MLIRLinpackIdamaxF64
+  Idamax
+  
+  MLIRLinpackDmxpyF32
+  MLIRLinpackDmxpyF64
+  Dmxpy
+  
+  MLIRLinpackEpslonF32
+  MLIRLinpackEpslonF64
+  Epslon
+
+  MLIRLinpackDgefaRollF32
   )
+
