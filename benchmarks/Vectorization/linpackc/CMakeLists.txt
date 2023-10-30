@@ -3,14 +3,13 @@
 #-------------------------------------------------------------------------------
 add_subdirectory(Daxpy)
 add_subdirectory(Ddot)
-# add_subdirectory(Dgefa)
-# add_subdirectory(Dgesl)
 add_subdirectory(Dmxpy)
 add_subdirectory(Dscal)
 add_subdirectory(Epslon)
 add_subdirectory(Idamax)
 add_subdirectory(Matgen)
-
+add_subdirectory(Dgefa)
+add_subdirectory(Dgesl)
 
 #-------------------------------------------------------------------------------
 # Vectorization Benchmark Targets
@@ -25,6 +24,8 @@ add_executable(vectorization-linpackc-benchmark
   ./Idamax/MLIRLinpackCIdamaxBenchmark.cpp
   ./Dmxpy/MLIRLinpackCDmxpyBenchmark.cpp
   ./Epslon/MLIRLinpackCEpslonBenchmark.cpp
+  ./Dgefa/MLIRLinpackCDgefaBenchmark.cpp
+  ./Dgesl/MLIRLinpackCDgeslBenchmark.cpp
   )
 
 target_link_libraries(vectorization-linpackc-benchmark
@@ -79,6 +80,15 @@ target_link_libraries(vectorization-linpackc-benchmark
   Epslonfloat_clang
   Epslondouble_clang
   
-  # MLIRLinpackDgefaRollF32
+  MLIRLinpackDgefaRollF32
+  Dgefafloat_gcc
+  Dgefadouble_gcc
+  Dgefafloat_clang
+  Dgefadouble_clang
+
+  Dgeslfloat_gcc
+  Dgesldouble_gcc
+  Dgeslfloat_clang
+  Dgesldouble_clang
   )
 
