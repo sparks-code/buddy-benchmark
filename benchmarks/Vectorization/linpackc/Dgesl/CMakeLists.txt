@@ -25,7 +25,8 @@ function(build_linpackcdgesl_gcc type compiler)
 add_custom_command(OUTPUT Dgesl${type}_gcc.o
 COMMAND cat ${BUDDY_SOURCE_DIR}/benchmarks/Vectorization/linpackc/Dgesl/Dgesl.cpp |
         sed -e 's/TYPE_PLACEHOLDER/${type}/g' -e 's/COMPILER_PLACEHOLDER/${compiler}/g' |
-        g++ -x c++ -c  -ftree-vectorize -march=native -static 
+        g++ -x c++ -c  -ftree-vectorize -march=native -static
+        -I${BUDDY_SOURCE_DIR}/benchmarks/Vectorization/linpackc
         -o Dgesl${type}_gcc.o -
         
 )
@@ -42,6 +43,7 @@ add_custom_command(OUTPUT Dgesl${type}_clang.o
 COMMAND cat ${BUDDY_SOURCE_DIR}/benchmarks/Vectorization/linpackc/Dgesl/Dgesl.cpp |
         sed -e 's/TYPE_PLACEHOLDER/${type}/g' -e 's/COMPILER_PLACEHOLDER/${compiler}/g' |
         ${LLVM_MLIR_BINARY_DIR}/clang++ -x c++ -c  -fvectorize -march=native 
+        -I${BUDDY_SOURCE_DIR}/benchmarks/Vectorization/linpackc
         -o Dgesl${type}_clang.o -    
 )
 add_library(Dgesl${type}_clang STATIC Dgesl${type}_clang.o)

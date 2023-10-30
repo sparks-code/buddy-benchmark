@@ -1,7 +1,7 @@
 #include <math.h>
 #include <stdio.h>
-#include "/root/buddy-benchmark/benchmarks/Vectorization/linpackc/Daxpy/Daxpy.h"
-#include "/root/buddy-benchmark/benchmarks/Vectorization/linpackc/Ddot/Ddot.h"
+#include <Daxpy/Daxpy.h>
+#include <Ddot/Ddot.h>
 
 void dgesl_ROLL_TYPE_PLACEHOLDER_COMPILER_PLACEHOLDER(TYPE_PLACEHOLDER a[],int lda, int n,int ipvt[],TYPE_PLACEHOLDER b[],int job)
 {

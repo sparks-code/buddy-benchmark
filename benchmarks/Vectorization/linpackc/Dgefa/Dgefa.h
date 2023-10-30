@@ -1,6 +1,6 @@
-#include "/root/buddy-benchmark/benchmarks/Vectorization/linpackc/Daxpy/Daxpy.h"
-#include "/root/buddy-benchmark/benchmarks/Vectorization/linpackc/Dscal/Dscal.h"
-#include "/root/buddy-benchmark/benchmarks/Vectorization/linpackc/Idamax/Idamax.h"
+#include <Daxpy/Daxpy.h>
+#include <Dscal/Dscal.h>
+#include <Idamax/Idamax.h>
 #include <math.h>
 #include <stdio.h>
 

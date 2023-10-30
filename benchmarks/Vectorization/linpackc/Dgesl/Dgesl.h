@@ -1,7 +1,7 @@
 #include <math.h>
 #include <stdio.h>
-#include "/root/buddy-benchmark/benchmarks/Vectorization/linpackc/Daxpy/Daxpy.h"
-#include "/root/buddy-benchmark/benchmarks/Vectorization/linpackc/Ddot/Ddot.h"
+#include <Daxpy/Daxpy.h>
+#include <Ddot/Ddot.h>
 
 void dgesl_ROLL_float_gcc(float a[], int lda, int n, int ipvt[], float b[],int job);
 void dgesl_ROLL_double_gcc(double a[], int lda, int n, int ipvt[], double b[],int job);

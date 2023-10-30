@@ -36,11 +36,8 @@ function(build_linpackcdgefa_gcc type compiler)
 add_custom_command(OUTPUT Dgefa${type}_gcc.o
 COMMAND cat ${BUDDY_SOURCE_DIR}/benchmarks/Vectorization/linpackc/Dgefa/Dgefa.cpp |
         sed -e 's/TYPE_PLACEHOLDER/${type}/g' -e 's/COMPILER_PLACEHOLDER/${compiler}/g' |
-        g++ -x c++ -c  -ftree-vectorize -march=native -static 
-        -L /root/buddy-benchmark/build/benchmarks/Vectorization/linpackc/Idamax
-        # -lDaxpyfloat_gcc -lDaxpydouble_gcc
-        # -lDscalfloat_gcc -lDscaldouble_gcc
-        # -lIdamaxfloat_gcc -lIdamaxdouble_gcc
+        g++ -x c++ -c -ftree-vectorize -march=native  
+        -I${BUDDY_SOURCE_DIR}/benchmarks/Vectorization/linpackc
         -o Dgefa${type}_gcc.o -
         
 )
@@ -57,9 +54,7 @@ add_custom_command(OUTPUT Dgefa${type}_clang.o
 COMMAND cat ${BUDDY_SOURCE_DIR}/benchmarks/Vectorization/linpackc/Dgefa/Dgefa.cpp |
         sed -e 's/TYPE_PLACEHOLDER/${type}/g' -e 's/COMPILER_PLACEHOLDER/${compiler}/g' |
         ${LLVM_MLIR_BINARY_DIR}/clang++ -x c++ -c  -fvectorize -march=native 
-        # -lDaxpyfloat_clang -lDaxpydouble_clang
-        # -lDscalfloat_clang -lDscaldouble_clang
-        # -lIdamaxfloat_clang -lIdamaxdouble_clang
+        -I${BUDDY_SOURCE_DIR}/benchmarks/Vectorization/linpackc
         -o Dgefa${type}_clang.o -    
 )
 add_library(Dgefa${type}_clang STATIC Dgefa${type}_clang.o)

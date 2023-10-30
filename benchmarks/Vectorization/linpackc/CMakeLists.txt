@@ -1,6 +1,7 @@
 #-------------------------------------------------------------------------------
 # MLIR SCF Dialect linpackc Operation + Upstream Lowering Passes
 #-------------------------------------------------------------------------------
+include_directories(${BUDDY_SOURCE_DIR}/benchmarks/Vectorization/linpackc)
 add_subdirectory(Daxpy)
 add_subdirectory(Ddot)
 add_subdirectory(Dmxpy)

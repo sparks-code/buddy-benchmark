@@ -1,8 +1,8 @@
 #include <math.h>
 #include <stdio.h>
-#include "/root/buddy-benchmark/benchmarks/Vectorization/linpackc/Daxpy/Daxpy.h"
-#include "/root/buddy-benchmark/benchmarks/Vectorization/linpackc/Dscal/Dscal.h"
-#include "/root/buddy-benchmark/benchmarks/Vectorization/linpackc/Idamax/Idamax.h"
+#include <Daxpy/Daxpy.h>
+#include <Dscal/Dscal.h>
+#include <Idamax/Idamax.h>
 
 void dgefa_ROLL_TYPE_PLACEHOLDER_COMPILER_PLACEHOLDER(TYPE_PLACEHOLDER a[], int lda, int n, int ipvt[], int *info)
 /* We would like to declare a[][lda], but c does not allow it.  In this
